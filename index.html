@@ -149,38 +149,21 @@
     </div>
   </section>
 
+  <!-- Teaser -->
   <section class="hero teaser">
     <div class="container is-max-desktop">
       <div class="hero-body">
-        <!-- <video id="teaser" autoplay muted loop playsinline height="100%">
-        <source src="./static/videos/teaser.mp4"
-                type="video/mp4">
-      </video> -->
-        <img src="./static/images/bezier_curve.png" alt="BézierFlow Teaser" style="width: 100%;">
+        <img src="./static/images/bezier_toy.png" alt="BézierFlow Toy Example" style="width: 100%;">
         <h2 class="subtitle has-text-centered">
-          <span class="dnerf">BézierFlow</span> learns optimal sampling trajectories parameterized by Bézier functions
-          for few-step generation.
+          <span class="dnerf">BézierFlow</span> optimizes the sampling trajectory (red) to match the high-quality
+          teacher trajectory (blue) with few steps.
+          By parameterizing the scheduler with Bézier curves, it learns a continuous time-warping function that enables
+          accurate few-step generation.
         </h2>
       </div>
     </div>
   </section>
-
-
-  <!-- <section class="hero is-light is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-steve">
-          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/steve.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
-
+  <!--/ Teaser -->
 
   <section class="section">
     <div class="container is-max-desktop">
@@ -213,6 +196,23 @@
         </div>
       </div>
       <!--/ Abstract. -->
+
+      <!-- TL;DR -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">TL;DR</h2>
+          <div class="content has-text-justified">
+            <p>
+              <strong>BézierFlow</strong> optimizes the sampling trajectory of diffusion/flow models using
+              <strong>Bézier curves</strong>.
+              It enables high-quality generation in just a few steps (e.g., 4-10 NFEs) by learning a continuous
+              time-warping function that is smooth, monotonic, and boundary-preserving.
+              Training takes only ~15 minutes!
+            </p>
+          </div>
+        </div>
+      </div>
+      <!--/ TL;DR -->
     </div>
   </section>
 
@@ -223,28 +223,42 @@
         <div class="column is-full-width">
           <h2 class="title is-3">Method</h2>
           <div class="content has-text-justified">
+            <h3 class="title is-4">Problem Definition</h3>
             <p>
-              We propose <strong>BézierFlow</strong>, a method to learn the optimal sampling trajectory for few-step
-              generation by parameterizing the Stochastic Interpolant (SI) scheduler using <strong>Bézier
-                curves</strong>.
+              Our goal is to learn an optimal <strong>sampling trajectory</strong> that enables high-quality generation
+              with a few Number of Function Evaluations (NFEs), using a pretrained diffusion or flow model.
+              We view this as a teacher-student problem where the <strong>teacher</strong> follows a high-quality source
+              path (many steps) and the <strong>student</strong> learns a target path (few steps) that matches the
+              teacher's output.
+            </p>
+            <p>
+              Formally, we minimize the KL divergence between the teacher's distribution \(q(x_1)\) and the student's
+              distribution \(\bar{p}_\theta(x_1)\):
+            </p>
+            <div class="box has-text-centered" style="background-color: #f5f5f5;">
+              $$ \min_{\theta} D_{\text{KL}}\left(q(x_1) \Vert \bar{p}_\theta(x_1)\right) $$
+            </div>
+            <p>
+              In practice, we use a tractable surrogate objective that enforces the outputs of the two solvers to align:
+            </p>
+            <div class="box has-text-centered" style="background-color: #f5f5f5;">
+              $$ \min_\theta \mathcal{L}(\theta) = \mathbb{E}_{x_0 \sim p_0}\big[ d\big(\xi(x_0, \{t_i\}_{i=1}^N;
+              S_\phi), \bar{\xi}_\theta(x_0, \{s_i\}_{i=1}^M; S_\phi)\big)\big] $$
+            </div>
+            <p>
+              where \(d(\cdot,\cdot)\) is a distance metric (e.g., LPIPS). This lightweight optimization adjusts only
+              the target scheduler coefficients while using the fixed pretrained model.
             </p>
 
-            <div class="has-text-centered">
-              <img src="./static/images/method_overview.png" alt="Method Overview"
-                style="width: 80%; margin-bottom: 20px;">
-            </div>
-
+            <h3 class="title is-4">Sampling Path Transformation</h3>
             <p>
-              Our key insight is to view the sampling process as a transformation of the source path via a time-warping
-              function.
-              Specifically, we define the target state \(\bar{x}_s\) from the source state \(x_{t_s}\) using a scaling
-              reparameterization:
+              To define the target path, we employ a <strong>scaling reparameterization</strong> of the source path.
+              Specifically, we define the target state \(\bar{x}_s\) from the source state \(x_{t_s}\) as:
             </p>
 
             <div class="box has-text-centered" style="background-color: #f5f5f5;">
               $$ \bar{x}_s = c_s x_{t_s}, \quad \text{where} \quad c_s = \frac{\bar{\sigma}(s)}{\sigma(t_s)} =
               \frac{\bar{\alpha}(s)}{\alpha(t_s)} $$
-              $$ t_s = \rho^{-1}(\bar{\rho}(s)), \quad \rho(t) = \frac{\alpha(t)}{\sigma(t)} $$
             </div>
 
             <p>
@@ -257,11 +271,11 @@
               u_{t_s}\left(\frac{\bar{x}_s}{c_s}\right) $$
             </div>
 
+            <h3 class="title is-4">Bézier Parameterization</h3>
             <p>
               To learn the optimal scheduler functions \(\bar{\alpha}(s)\) and \(\bar{\sigma}(s)\), we employ
               <strong>1D Bézier curves</strong>. A Bézier parameterization naturally satisfies the critical
-              requirements for a
-              valid scheduler:
+              requirements for a valid scheduler:
             </p>
             <ul>
               <li><strong>Boundary Conditions:</strong> Fixed control points at \(s=0\) and \(s=1\) ensure the schedule
@@ -271,6 +285,11 @@
               <li><strong>Differentiability:</strong> Bézier curves are smooth (\(C^\infty\)) polynomials, allowing for
                 stable calculation of time derivatives required for the velocity field.</li>
             </ul>
+
+            <div class="has-text-centered" style="margin-top: 20px;">
+              <img src="./static/images/method_overview.png" alt="Method Overview"
+                style="width: 80%; margin-bottom: 20px;">
+            </div>
           </div>
         </div>
       </div>

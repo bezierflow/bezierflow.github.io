@@ -229,59 +229,90 @@
     </div>
   </section>
 
+  <!-- Method. -->
   <section class="section">
     <div class="container is-max-desktop">
-      <!-- Method. -->
       <div class="columns is-centered has-text-centered">
         <div class="column is-full-width">
           <h2 class="title is-3">Method</h2>
           <div class="content has-text-justified">
             <p>
-              Our core idea is to parameterize the <strong>Stochastic Interpolant (SI) scheduler</strong>—which governs
-              the noise schedule $\alpha(t)$ and $\sigma(t)$—using <strong>Bézier curves</strong>.
-              Unlike previous methods that optimize discrete timesteps, BézierFlow learns a continuous function.
+              We propose <strong>BézierFlow</strong>, a method to learn the optimal sampling trajectory for few-step
+              generation by parameterizing the Stochastic Interpolant (SI) scheduler using <strong>Bézier
+                curves</strong>.
             </p>
+
             <div class="has-text-centered">
               <img src="./static/images/method_overview.png" alt="Method Overview"
                 style="width: 80%; margin-bottom: 20px;">
             </div>
+
             <p>
-              A 1D Bézier function naturally satisfies the key requirements for a valid scheduler:
+              Our key insight is to view the sampling process as a transformation of the source path via a time-warping
+              function.
+              Specifically, we define the target state $\bar{x}_s$ from the source state $x_{t_s}$ using a scaling
+              reparameterization:
+            </p>
+
+            <div class="box has-text-centered" style="background-color: #f5f5f5;">
+              $$ \bar{x}_s = c_s x_{t_s}, \quad \text{where} \quad c_s = \frac{\bar{\sigma}(s)}{\sigma(t_s)} =
+              \frac{\bar{\alpha}(s)}{\alpha(t_s)} $$
+              $$ t_s = \rho^{-1}(\bar{\rho}(s)), \quad \rho(t) = \frac{\alpha(t)}{\sigma(t)} $$
+            </div>
+
+            <p>
+              This transformation preserves the endpoint marginals while changing the geometry of the sampling path. The
+              velocity along the target path is given by:
+            </p>
+
+            <div class="box has-text-centered" style="background-color: #f5f5f5;">
+              $$ \bar{u}_s(\bar{x}_s) = (\partial_s \log c_s) \bar{x}_s + c_s \frac{dt_s}{ds}
+              u_{t_s}\left(\frac{\bar{x}_s}{c_s}\right) $$
+            </div>
+
+            <p>
+              To learn the optimal scheduler functions $\bar{\alpha}(s)$ and $\bar{\sigma}(s)$, we employ <strong>1D
+                Bézier curves</strong>. A Bézier parameterization naturally satisfies the critical requirements for a
+              valid scheduler:
             </p>
             <ul>
-              <li><strong>Boundary Conditions:</strong> Fixed start and end control points ensure the schedule starts at
-                pure noise and ends at data.</li>
+              <li><strong>Boundary Conditions:</strong> Fixed control points at $s=0$ and $s=1$ ensure the schedule
+                starts at pure noise and ends at data.</li>
               <li><strong>Monotonicity:</strong> Enforcing non-decreasing control points guarantees a strictly
-                increasing Signal-to-Noise Ratio (SNR).</li>
-              <li><strong>Differentiability:</strong> Polynomials are smooth ($C^\infty$), allowing for stable
-                optimization and valid velocity field derivation.</li>
+                increasing Signal-to-Noise Ratio (SNR), ensuring the mapping $t_s$ is invertible.</li>
+              <li><strong>Differentiability:</strong> Bézier curves are smooth ($C^\infty$) polynomials, allowing for
+                stable calculation of time derivatives required for the velocity field.</li>
             </ul>
           </div>
         </div>
       </div>
-      <!--/ Method. -->
+    </div>
+  </section>
+  <!--/ Method. -->
 
-      <!-- Interactive Demo. -->
+  <!-- Bézier Stochastic Interpolant Scheduler. -->
+  <section class="section" style="background-color: #fcfcfc;">
+    <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div class="column is-full-width">
-          <h2 class="title is-3">Interactive Demo</h2>
+          <h2 class="title is-3">Bézier Stochastic Interpolant Scheduler</h2>
           <div class="content has-text-justified">
             <p>
-              Play with the control points below to see how a Bézier curve can flexibly represent different scheduler
-              shapes while maintaining fixed endpoints.
-              In BézierFlow, we optimize these intermediate red points to find the best trajectory for few-step
-              generation.
+              The interactive visualization below demonstrates how a 1D Bézier curve can flexibly represent different
+              scheduler shapes while maintaining fixed endpoints.
+              By adjusting the control points (red), BézierFlow optimizes the continuous trajectory of the noise
+              schedule $\alpha(t)$ or $\sigma(t)$ to minimize discretization error in few-step sampling.
             </p>
           </div>
-          <div class="box" style="padding: 0;">
-            <iframe src="./static/js/bezier_tool.html"
-              style="width: 100%; height: 500px; border: none; overflow: hidden;"></iframe>
+          <div class="box"
+            style="padding: 0; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            <iframe src="./static/js/bezier_tool.html" style="width: 100%; height: 500px; border: none;"></iframe>
           </div>
         </div>
       </div>
-      <!--/ Interactive Demo. -->
     </div>
   </section>
+  <!--/ Bézier Stochastic Interpolant Scheduler. -->
 
   <section class="section">
     <div class="container is-max-desktop">
@@ -296,10 +327,29 @@
             <p>Comparison of generated samples at 6 function evaluations.</p>
           </div>
 
-          <h3 class="title is-4">ImageNet 64x64 (NFE=6)</h3>
+          <h3 class="title is-4">ImageNet 256x256 (NFE=6)</h3>
           <div class="content has-text-centered">
             <img src="./static/images/qual_imagenet.png" alt="ImageNet Results" style="width: 100%;">
-            <p>Comparison on ImageNet generation.</p>
+            <p>Comparison on ImageNet 256x256 generation.</p>
+          </div>
+
+          <h3 class="title is-4">Stable Diffusion v3.5 (NFE=6)</h3>
+          <div class="content has-text-centered">
+            <div class="columns">
+              <div class="column is-half">
+                <figure class="image">
+                  <img src="./static/images/sd_base.png" alt="SDv3.5 Base">
+                  <figcaption>Base Solver (RK2)</figcaption>
+                </figure>
+              </div>
+              <div class="column is-half">
+                <figure class="image">
+                  <img src="./static/images/sd_ours.png" alt="SDv3.5 Ours">
+                  <figcaption>BézierFlow (Ours)</figcaption>
+                </figure>
+              </div>
+            </div>
+            <p>Comparison on Stable Diffusion v3.5 (MS-COCO prompts).</p>
           </div>
         </div>
       </div>
@@ -309,10 +359,120 @@
 
   <section class="section">
     <div class="container is-max-desktop">
+      <!-- Extension to Other Domains. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Extension to Other Domains</h2>
+          <div class="content has-text-justified">
+            <p>
+              BézierFlow is a generic framework applicable beyond image generation. We demonstrate its effectiveness on
+              <strong>3D Point Cloud Generation</strong> and <strong>Layout Generation</strong>.
+            </p>
+          </div>
+
+          <h3 class="title is-4">3D Point Cloud Generation</h3>
+          <div class="content has-text-centered">
+            <div class="columns is-centered">
+              <div class="column is-half">
+                <figure class="image">
+                  <img src="./static/images/pc_base.png" alt="Point Cloud Base">
+                  <figcaption>Base Solver (iPNDM, NFE=1)</figcaption>
+                </figure>
+              </div>
+              <div class="column is-half">
+                <figure class="image">
+                  <img src="./static/images/pc_ours.png" alt="Point Cloud Ours">
+                  <figcaption>BézierFlow (Ours, NFE=1)</figcaption>
+                </figure>
+              </div>
+            </div>
+            <p>Unconditional generation of airplane point clouds (ShapeNet).</p>
+          </div>
+
+          <h3 class="title is-4">Layout Generation</h3>
+          <div class="content has-text-centered">
+            <div class="columns is-centered">
+              <div class="column is-half">
+                <figure class="image">
+                  <img src="./static/images/layout_base.png" alt="Layout Base">
+                  <figcaption>Base Solver (RK1)</figcaption>
+                </figure>
+              </div>
+              <div class="column is-half">
+                <figure class="image">
+                  <img src="./static/images/layout_ours.png" alt="Layout Ours">
+                  <figcaption>BézierFlow (Ours)</figcaption>
+                </figure>
+              </div>
+            </div>
+            <p>Unconditional layout generation (RICO dataset).</p>
+          </div>
+
+          <h3 class="title is-4">Quantitative Results on Other Domains</h3>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+              style="width: 80%; margin: 0 auto;">
+              <thead>
+                <tr>
+                  <th>Task</th>
+                  <th>Metric</th>
+                  <th>Method</th>
+                  <th>NFE=1</th>
+                  <th>NFE=2</th>
+                  <th>NFE=4</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="2" style="vertical-align: middle;">3D Point Cloud</td>
+                  <td rowspan="2" style="vertical-align: middle;">CD-MMD (↓)</td>
+                  <td>Base (iPNDM)</td>
+                  <td>2.78</td>
+                  <td>1.85</td>
+                  <td>1.32</td>
+                </tr>
+                <tr style="font-weight: bold; background-color: #f0f8ff;">
+                  <td>BézierFlow</td>
+                  <td>1.34</td>
+                  <td>1.28</td>
+                  <td>1.25</td>
+                </tr>
+                <tr>
+                  <td colspan="6" style="background-color: #fff; border: none;"></td>
+                </tr>
+                <tr>
+                  <td rowspan="2" style="vertical-align: middle;">Layout</td>
+                  <td rowspan="2" style="vertical-align: middle;">FID (↓)</td>
+                  <td>Base (RK1)</td>
+                  <td>35.12</td>
+                  <td>18.45</td>
+                  <td>8.23</td>
+                </tr>
+                <tr style="font-weight: bold; background-color: #f0f8ff;">
+                  <td>BézierFlow</td>
+                  <td>12.45</td>
+                  <td>5.67</td>
+                  <td>3.12</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="is-size-7 has-text-centered" style="margin-top: 10px;">
+              * Comparison of generation quality on ShapeNet (Point Cloud) and RICO (Layout).
+            </p>
+          </div>
+
+        </div>
+      </div>
+      <!--/ Extension to Other Domains. -->
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
       <!-- Quantitative Results. -->
       <div class="columns is-centered has-text-centered">
         <div class="column is-full-width">
-          <h2 class="title is-3">Quantitative Results</h2>
+          <h2 class="title is-3">Quantitative Results (Image Generation)</h2>
           <div class="content has-text-justified">
             <p>
               BézierFlow consistently outperforms existing lightweight training methods (DMN, GITS, LD3) across various

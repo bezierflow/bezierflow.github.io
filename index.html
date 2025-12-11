@@ -210,17 +210,174 @@
       </div>
       <!--/ Abstract. -->
 
-      <!-- Paper video. -->
-      <!-- <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Video</h2>
-        <div class="publication-video">
-          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
-                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <!-- TL;DR -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">TL;DR</h2>
+          <div class="content has-text-justified">
+            <p>
+              <strong>BézierFlow</strong> optimizes the sampling trajectory of diffusion/flow models using
+              <strong>Bézier curves</strong>.
+              It enables high-quality generation in just a few steps (e.g., 4-10 NFEs) by learning a continuous
+              time-warping function that is smooth, monotonic, and boundary-preserving.
+              Training takes only ~15 minutes!
+            </p>
+          </div>
         </div>
       </div>
-    </div> -->
-      <!--/ Paper video. -->
+      <!--/ TL;DR -->
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Method. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Method</h2>
+          <div class="content has-text-justified">
+            <p>
+              Our core idea is to parameterize the <strong>Stochastic Interpolant (SI) scheduler</strong>—which governs
+              the noise schedule $\alpha(t)$ and $\sigma(t)$—using <strong>Bézier curves</strong>.
+              Unlike previous methods that optimize discrete timesteps, BézierFlow learns a continuous function.
+            </p>
+            <div class="has-text-centered">
+              <img src="./static/images/method_overview.png" alt="Method Overview"
+                style="width: 80%; margin-bottom: 20px;">
+            </div>
+            <p>
+              A 1D Bézier function naturally satisfies the key requirements for a valid scheduler:
+            </p>
+            <ul>
+              <li><strong>Boundary Conditions:</strong> Fixed start and end control points ensure the schedule starts at
+                pure noise and ends at data.</li>
+              <li><strong>Monotonicity:</strong> Enforcing non-decreasing control points guarantees a strictly
+                increasing Signal-to-Noise Ratio (SNR).</li>
+              <li><strong>Differentiability:</strong> Polynomials are smooth ($C^\infty$), allowing for stable
+                optimization and valid velocity field derivation.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!--/ Method. -->
+
+      <!-- Interactive Demo. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Interactive Demo</h2>
+          <div class="content has-text-justified">
+            <p>
+              Play with the control points below to see how a Bézier curve can flexibly represent different scheduler
+              shapes while maintaining fixed endpoints.
+              In BézierFlow, we optimize these intermediate red points to find the best trajectory for few-step
+              generation.
+            </p>
+          </div>
+          <div class="box" style="padding: 0;">
+            <iframe src="./static/js/bezier_tool.html"
+              style="width: 100%; height: 500px; border: none; overflow: hidden;"></iframe>
+          </div>
+        </div>
+      </div>
+      <!--/ Interactive Demo. -->
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Qualitative Results. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Qualitative Results</h2>
+
+          <h3 class="title is-4">CIFAR-10 (NFE=6)</h3>
+          <div class="content has-text-centered">
+            <img src="./static/images/qual_cifar10.png" alt="CIFAR-10 Results" style="width: 100%;">
+            <p>Comparison of generated samples at 6 function evaluations.</p>
+          </div>
+
+          <h3 class="title is-4">ImageNet 64x64 (NFE=6)</h3>
+          <div class="content has-text-centered">
+            <img src="./static/images/qual_imagenet.png" alt="ImageNet Results" style="width: 100%;">
+            <p>Comparison on ImageNet generation.</p>
+          </div>
+        </div>
+      </div>
+      <!--/ Qualitative Results. -->
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Quantitative Results. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Quantitative Results</h2>
+          <div class="content has-text-justified">
+            <p>
+              BézierFlow consistently outperforms existing lightweight training methods (DMN, GITS, LD3) across various
+              datasets and NFEs.
+              Below is a summary of FID scores on CIFAR-10.
+            </p>
+          </div>
+
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>NFE=4</th>
+                  <th>NFE=6</th>
+                  <th>NFE=8</th>
+                  <th>NFE=10</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>UniPC (Baseline)</td>
+                  <td>50.30</td>
+                  <td>19.33</td>
+                  <td>14.96</td>
+                  <td>23.59</td>
+                </tr>
+                <tr>
+                  <td>+ DMN</td>
+                  <td>26.42</td>
+                  <td>8.11</td>
+                  <td>9.44</td>
+                  <td>30.39</td>
+                </tr>
+                <tr>
+                  <td>+ GITS</td>
+                  <td>24.83</td>
+                  <td>11.02</td>
+                  <td>12.12</td>
+                  <td>13.20</td>
+                </tr>
+                <tr>
+                  <td>+ LD3</td>
+                  <td>12.04</td>
+                  <td>3.56</td>
+                  <td>6.16</td>
+                  <td>18.17</td>
+                </tr>
+                <tr style="font-weight: bold; background-color: #f0f8ff;">
+                  <td>+ BézierFlow (Ours)</td>
+                  <td>9.55</td>
+                  <td>3.13</td>
+                  <td>7.43</td>
+                  <td>12.27</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="is-size-7 has-text-left">
+            * FID scores (lower is better) on CIFAR-10 32x32 using EDM with UniPC solver.
+          </p>
+
+        </div>
+      </div>
+      <!--/ Quantitative Results. -->
     </div>
   </section>
 

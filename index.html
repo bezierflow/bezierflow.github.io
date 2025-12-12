@@ -227,7 +227,7 @@
 
       <!-- Static Header -->
       <div class="columns is-centered is-gapless is-mobile has-text-centered header-row">
-        <div class="column is-1"></div> <!-- Spacer for NFE -->
+        <div class="column is-1">NFE</div>
         <div class="column">Base (RK2)</div>
         <div class="column">DMN</div>
         <div class="column">GITS</div>
@@ -299,10 +299,13 @@
       <!-- SDv3.5 Results -->
       <h2 class="title is-3 has-text-centered" style="margin-top: 50px;">Stable Diffusion v3.5</h2>
 
-      <!-- Static Header -->
+      <!-- RK1 Subsection -->
+      <h3 class="title is-4 has-text-centered">Base Solver: RK1</h3>
+
+      <!-- Static Header (RK1) -->
       <div class="columns is-centered is-gapless is-mobile has-text-centered header-row">
-        <div class="column is-1"></div> <!-- Spacer for NFE -->
-        <div class="column">Base</div>
+        <div class="column is-1">NFE</div>
+        <div class="column">Base (RK1)</div>
         <div class="column">DMN</div>
         <div class="column">GITS</div>
         <div class="column">Bespoke</div>
@@ -310,7 +313,7 @@
         <div class="column">BézierFlow</div>
       </div>
 
-      <!-- Content Row -->
+      <!-- Content Row (RK1) -->
       <div class="columns is-gapless">
         <!-- Static NFE Column -->
         <div class="column is-1 nfe-col">
@@ -333,7 +336,7 @@
                 <div class="column"><img src="./static/images/RK1_Ours_NFE6_00058.png"></div>
               </div>
               <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"A man standing up
-                against a wall with his hands clasped together." (Base: RK1)</p>
+                against a wall with his hands clasped together."</p>
               <!-- NFE 8 -->
               <div class="columns is-centered is-gapless is-mobile has-text-centered">
                 <div class="column"><img src="./static/images/RK1_Base_NFE8_02018.png"></div>
@@ -344,36 +347,10 @@
                 <div class="column"><img src="./static/images/RK1_Ours_NFE8_02018.png"></div>
               </div>
               <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"Computer on the desk at
-                nighttime in front of a window." (Base: RK1)</p>
+                nighttime in front of a window."</p>
             </div>
 
-            <!-- Slide 2: RK2 Sample 1 -->
-            <div class="item">
-              <!-- NFE 6 -->
-              <div class="columns is-centered is-gapless is-mobile has-text-centered">
-                <div class="column"><img src="./static/images/RK2_Base_NFE6_02817.png"></div>
-                <div class="column"><img src="./static/images/RK2_DMN_NFE6_02817.png"></div>
-                <div class="column"><img src="./static/images/RK2_GITS_NFE6_02817.png"></div>
-                <div class="column"><img src="./static/images/RK2_Bespoke_NFE6_02817.png"></div>
-                <div class="column"><img src="./static/images/RK2_LD3_NFE6_02817.png"></div>
-                <div class="column"><img src="./static/images/RK2_Ours_NFE6_02817.png"></div>
-              </div>
-              <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"A bus stopped in front
-                of a tall red building." (Base: RK2)</p>
-              <!-- NFE 8 -->
-              <div class="columns is-centered is-gapless is-mobile has-text-centered">
-                <div class="column"><img src="./static/images/RK2_Base_NFE8_04497.png"></div>
-                <div class="column"><img src="./static/images/RK2_DMN_NFE8_04497.png"></div>
-                <div class="column"><img src="./static/images/RK2_GITS_NFE8_04497.png"></div>
-                <div class="column"><img src="./static/images/RK2_Bespoke_NFE8_04497.png"></div>
-                <div class="column"><img src="./static/images/RK2_LD3_NFE8_04497.png"></div>
-                <div class="column"><img src="./static/images/RK2_Ours_NFE8_04497.png"></div>
-              </div>
-              <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"A white bird walking
-                through a shallow area of water." (Base: RK2)</p>
-            </div>
-
-            <!-- Slide 3: RK1 Sample 2 -->
+            <!-- Slide 2: RK1 Sample 2 -->
             <div class="item">
               <!-- NFE 6 -->
               <div class="columns is-centered is-gapless is-mobile has-text-centered">
@@ -385,7 +362,7 @@
                 <div class="column"><img src="./static/images/RK1_Ours_NFE6_00917.png"></div>
               </div>
               <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"A laptop computer
-                sitting on top of a wooden table." (Base: RK1)</p>
+                sitting on top of a wooden table."</p>
               <!-- NFE 8 -->
               <div class="columns is-centered is-gapless is-mobile has-text-centered">
                 <div class="column"><img src="./static/images/RK1_Base_NFE8_02107.png"></div>
@@ -396,10 +373,64 @@
                 <div class="column"><img src="./static/images/RK1_Ours_NFE8_02107.png"></div>
               </div>
               <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"A brown dog hanging it's
-                head out of a car window." (Base: RK1)</p>
+                head out of a car window."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RK2 Subsection -->
+      <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">Base Solver: RK2</h3>
+
+      <!-- Static Header (RK2) -->
+      <div class="columns is-centered is-gapless is-mobile has-text-centered header-row">
+        <div class="column is-1">NFE</div>
+        <div class="column">Base (RK2)</div>
+        <div class="column">DMN</div>
+        <div class="column">GITS</div>
+        <div class="column">Bespoke</div>
+        <div class="column">LD3</div>
+        <div class="column">BézierFlow</div>
+      </div>
+
+      <!-- Content Row (RK2) -->
+      <div class="columns is-gapless">
+        <!-- Static NFE Column -->
+        <div class="column is-1 nfe-col">
+          <div class="nfe-cell">6</div>
+          <div class="nfe-cell">8</div>
+        </div>
+
+        <!-- Carousel Column -->
+        <div class="column" style="min-width: 0; overflow: hidden;">
+          <div class="results-carousel carousel">
+            <!-- Slide 1: RK2 Sample 1 -->
+            <div class="item">
+              <!-- NFE 6 -->
+              <div class="columns is-centered is-gapless is-mobile has-text-centered">
+                <div class="column"><img src="./static/images/RK2_Base_NFE6_02817.png"></div>
+                <div class="column"><img src="./static/images/RK2_DMN_NFE6_02817.png"></div>
+                <div class="column"><img src="./static/images/RK2_GITS_NFE6_02817.png"></div>
+                <div class="column"><img src="./static/images/RK2_Bespoke_NFE6_02817.png"></div>
+                <div class="column"><img src="./static/images/RK2_LD3_NFE6_02817.png"></div>
+                <div class="column"><img src="./static/images/RK2_Ours_NFE6_02817.png"></div>
+              </div>
+              <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"A bus stopped in front
+                of a tall red building."</p>
+              <!-- NFE 8 -->
+              <div class="columns is-centered is-gapless is-mobile has-text-centered">
+                <div class="column"><img src="./static/images/RK2_Base_NFE8_04497.png"></div>
+                <div class="column"><img src="./static/images/RK2_DMN_NFE8_04497.png"></div>
+                <div class="column"><img src="./static/images/RK2_GITS_NFE8_04497.png"></div>
+                <div class="column"><img src="./static/images/RK2_Bespoke_NFE8_04497.png"></div>
+                <div class="column"><img src="./static/images/RK2_LD3_NFE8_04497.png"></div>
+                <div class="column"><img src="./static/images/RK2_Ours_NFE8_04497.png"></div>
+              </div>
+              <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"A white bird walking
+                through a shallow area of water."</p>
             </div>
 
-            <!-- Slide 4: RK2 Sample 2 -->
+            <!-- Slide 2: RK2 Sample 2 -->
             <div class="item">
               <!-- NFE 6 -->
               <div class="columns is-centered is-gapless is-mobile has-text-centered">
@@ -411,7 +442,7 @@
                 <div class="column"><img src="./static/images/RK2_Ours_NFE6_02915.png"></div>
               </div>
               <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"A few pieces of luggage
-                sitting on top of a chair in an airport." (Base: RK2)</p>
+                sitting on top of a chair in an airport."</p>
               <!-- NFE 8 -->
               <div class="columns is-centered is-gapless is-mobile has-text-centered">
                 <div class="column"><img src="./static/images/RK2_Base_NFE8_04829.png"></div>
@@ -422,7 +453,7 @@
                 <div class="column"><img src="./static/images/RK2_Ours_NFE8_04829.png"></div>
               </div>
               <p class="has-text-centered is-italic" style="padding: 2px; margin-bottom: 5px;">"A young lady riding skis
-                on a snow covered slope." (Base: RK2)</p>
+                on a snow covered slope."</p>
             </div>
           </div>
         </div>
@@ -436,7 +467,7 @@
 
       <!-- Static Header -->
       <div class="columns is-centered is-gapless is-mobile has-text-centered header-row">
-        <div class="column is-1"></div> <!-- Spacer for NFE -->
+        <div class="column is-1">NFE</div>
         <div class="column">Base (iPNDM)</div>
         <div class="column">DMN</div>
         <div class="column">GITS</div>
@@ -503,11 +534,11 @@
 
       <!-- Static Header -->
       <div class="columns is-centered is-gapless is-mobile has-text-centered header-row">
-        <div class="column is-1"></div> <!-- Spacer for NFE -->
+        <div class="column is-1">NFE</div>
         <div class="column">Base (RK1)</div>
-        <div class="column">Bespoke</div>
         <div class="column">DMN</div>
         <div class="column">GITS</div>
+        <div class="column">Bespoke</div>
         <div class="column">LD3</div>
         <div class="column" style="border-right: 2px solid #ccc;">BézierFlow</div>
         <div class="column">Teacher</div>
@@ -529,9 +560,9 @@
               <!-- NFE 6 -->
               <div class="columns is-centered is-gapless is-mobile has-text-centered">
                 <div class="column"><img src="./static/images/RK1_87.png"></div>
-                <div class="column"><img src="./static/images/Bespoke_87.png"></div>
                 <div class="column"><img src="./static/images/DMN_87.png"></div>
                 <div class="column"><img src="./static/images/GITS_87.png"></div>
+                <div class="column"><img src="./static/images/Bespoke_87.png"></div>
                 <div class="column"><img src="./static/images/LD3_87.png"></div>
                 <div class="column" style="border-right: 2px solid #ccc;"><img src="./static/images/Ours_87.png"></div>
                 <div class="column"><img src="./static/images/Teacher_87.png"></div>
@@ -539,9 +570,9 @@
               <!-- NFE 8 -->
               <div class="columns is-centered is-gapless is-mobile has-text-centered">
                 <div class="column"><img src="./static/images/RK1_72.png"></div>
-                <div class="column"><img src="./static/images/Bespoke_72.png"></div>
                 <div class="column"><img src="./static/images/DMN_72.png"></div>
                 <div class="column"><img src="./static/images/GITS_72.png"></div>
+                <div class="column"><img src="./static/images/Bespoke_72.png"></div>
                 <div class="column"><img src="./static/images/LD3_72.png"></div>
                 <div class="column" style="border-right: 2px solid #ccc;"><img src="./static/images/Ours_72.png"></div>
                 <div class="column"><img src="./static/images/Teacher_72.png"></div>
@@ -553,9 +584,9 @@
               <!-- NFE 6 -->
               <div class="columns is-centered is-gapless is-mobile has-text-centered">
                 <div class="column"><img src="./static/images/RK1_182.png"></div>
-                <div class="column"><img src="./static/images/Bespoke_182.png"></div>
                 <div class="column"><img src="./static/images/DMN_182.png"></div>
                 <div class="column"><img src="./static/images/GITS_182.png"></div>
+                <div class="column"><img src="./static/images/Bespoke_182.png"></div>
                 <div class="column"><img src="./static/images/LD3_182.png"></div>
                 <div class="column" style="border-right: 2px solid #ccc;"><img src="./static/images/Ours_182.png"></div>
                 <div class="column"><img src="./static/images/Teacher_182.png"></div>
@@ -563,9 +594,9 @@
               <!-- NFE 8 -->
               <div class="columns is-centered is-gapless is-mobile has-text-centered">
                 <div class="column"><img src="./static/images/RK1_159.png"></div>
-                <div class="column"><img src="./static/images/Bespoke_159.png"></div>
                 <div class="column"><img src="./static/images/DMN_159.png"></div>
                 <div class="column"><img src="./static/images/GITS_159.png"></div>
+                <div class="column"><img src="./static/images/Bespoke_159.png"></div>
                 <div class="column"><img src="./static/images/LD3_159.png"></div>
                 <div class="column" style="border-right: 2px solid #ccc;"><img src="./static/images/Ours_159.png"></div>
                 <div class="column"><img src="./static/images/Teacher_159.png"></div>

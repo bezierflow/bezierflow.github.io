@@ -174,7 +174,7 @@
   <section class="hero teaser">
     <div class="container is-max-desktop">
       <div class="hero-body">
-        <img src="./static/images/bézierflow_teaser.pdf" alt="BézierFlow Teaser" style="width: 100%;">
+        <img src="./static/images/bézierflow_teaser.png" alt="BézierFlow Teaser" style="width: 100%;">
         <h2 class="subtitle has-text-centered">
           <span class="dnerf">BézierFlow</span> optimizes the sampling trajectory to match the high-quality
           teacher trajectory with few steps.
@@ -352,10 +352,11 @@
 
       <!-- Extension Results -->
       <h2 class="title is-3 has-text-centered" style="margin-top: 50px;">Extension to Other Domains</h2>
+
+      <!-- Point Cloud -->
+      <h3 class="title is-4 has-text-centered">3D Point Cloud Generation (NFE=1)</h3>
       <div class="results-carousel carousel">
-        <!-- Slide 1: Point Cloud -->
         <div class="item">
-          <h3 class="title is-4 has-text-centered">3D Point Cloud (NFE=1)</h3>
           <div class="columns is-centered is-gapless is-mobile has-text-centered">
             <div class="column">
               <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_1.png">
@@ -374,9 +375,69 @@
             </div>
           </div>
         </div>
-        <!-- Slide 2: Layout -->
         <div class="item">
-          <h3 class="title is-4 has-text-centered">Layout Generation (NFE=4)</h3>
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_3.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_3.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_3.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_3.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_3.png">
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_17.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_17.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_17.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_17.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_17.png">
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_87.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_87.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_87.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_87.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_87.png">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layout -->
+      <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">Layout Generation (NFE=6)</h3>
+      <div class="results-carousel carousel">
+        <div class="item">
           <div class="columns is-centered is-gapless is-mobile has-text-centered">
             <div class="column">
               <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_159.png">
@@ -390,8 +451,77 @@
             <div class="column">
               <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_159.png">
             </div>
-            <div class="column">
+            <div class="column" style="border-right: 2px solid #ccc;">
               <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_159.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Teacher</p><img src="./static/images/Teacher_159.png">
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_182.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_182.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_182.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_182.png">
+            </div>
+            <div class="column" style="border-right: 2px solid #ccc;">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_182.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Teacher</p><img src="./static/images/Teacher_182.png">
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_72.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_72.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_72.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_72.png">
+            </div>
+            <div class="column" style="border-right: 2px solid #ccc;">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_72.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Teacher</p><img src="./static/images/Teacher_72.png">
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_87.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_87.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_87.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_87.png">
+            </div>
+            <div class="column" style="border-right: 2px solid #ccc;">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_87.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Teacher</p><img src="./static/images/Teacher_87.png">
             </div>
           </div>
         </div>

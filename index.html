@@ -149,14 +149,35 @@
     </div>
   </section>
 
+  <!-- TL;DR -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">TL;DR</h2>
+          <div class="content has-text-justified">
+            <p>
+              <strong>BézierFlow</strong> optimizes the sampling trajectory of diffusion/flow models using
+              <strong>Bézier curves</strong>.
+              It enables high-quality generation in just a few steps (e.g., 4-10 NFEs) by learning a continuous
+              time-warping function that is smooth, monotonic, and boundary-preserving.
+              Training takes only ~15 minutes!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--/ TL;DR -->
+
   <!-- Teaser -->
   <section class="hero teaser">
     <div class="container is-max-desktop">
       <div class="hero-body">
-        <img src="./static/images/bezier_toy.png" alt="BézierFlow Toy Example" style="width: 100%;">
+        <img src="./static/images/bézierflow_teaser.png" alt="BézierFlow Teaser" style="width: 100%;">
         <h2 class="subtitle has-text-centered">
-          <span class="dnerf">BézierFlow</span> optimizes the sampling trajectory (red) to match the high-quality
-          teacher trajectory (blue) with few steps.
+          <span class="dnerf">BézierFlow</span> optimizes the sampling trajectory to match the high-quality
+          teacher trajectory with few steps.
           By parameterizing the scheduler with Bézier curves, it learns a continuous time-warping function that enables
           accurate few-step generation.
         </h2>
@@ -165,9 +186,9 @@
   </section>
   <!--/ Teaser -->
 
+  <!-- Abstract. -->
   <section class="section">
     <div class="container is-max-desktop">
-      <!-- Abstract. -->
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <h2 class="title is-3">Abstract</h2>
@@ -195,451 +216,187 @@
           </div>
         </div>
       </div>
-      <!--/ Abstract. -->
-
-      <!-- TL;DR -->
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">TL;DR</h2>
-          <div class="content has-text-justified">
-            <p>
-              <strong>BézierFlow</strong> optimizes the sampling trajectory of diffusion/flow models using
-              <strong>Bézier curves</strong>.
-              It enables high-quality generation in just a few steps (e.g., 4-10 NFEs) by learning a continuous
-              time-warping function that is smooth, monotonic, and boundary-preserving.
-              Training takes only ~15 minutes!
-            </p>
-          </div>
-        </div>
-      </div>
-      <!--/ TL;DR -->
     </div>
   </section>
-
-  <!-- Method. -->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3">Method</h2>
-          <div class="content has-text-justified">
-            <h3 class="title is-4">Problem Definition</h3>
-            <p>
-              Our goal is to learn an optimal <strong>sampling trajectory</strong> that enables high-quality generation
-              with a few Number of Function Evaluations (NFEs), using a pretrained diffusion or flow model.
-              We view this as a teacher-student problem where the <strong>teacher</strong> follows a high-quality source
-              path (many steps) and the <strong>student</strong> learns a target path (few steps) that matches the
-              teacher's output.
-            </p>
-            <p>
-              Formally, we minimize the KL divergence between the teacher's distribution \(q(x_1)\) and the student's
-              distribution \(\bar{p}_\theta(x_1)\):
-            </p>
-            <div class="box has-text-centered" style="background-color: #f5f5f5;">
-              $$ \min_{\theta} D_{\text{KL}}\left(q(x_1) \Vert \bar{p}_\theta(x_1)\right) $$
-            </div>
-            <p>
-              In practice, we use a tractable surrogate objective that enforces the outputs of the two solvers to align:
-            </p>
-            <div class="box has-text-centered" style="background-color: #f5f5f5;">
-              $$ \min_\theta \mathcal{L}(\theta) = \mathbb{E}_{x_0 \sim p_0}\big[ d\big(\xi(x_0, \{t_i\}_{i=1}^N;
-              S_\phi), \bar{\xi}_\theta(x_0, \{s_i\}_{i=1}^M; S_\phi)\big)\big] $$
-            </div>
-            <p>
-              where \(d(\cdot,\cdot)\) is a distance metric (e.g., LPIPS). This lightweight optimization adjusts only
-              the target scheduler coefficients while using the fixed pretrained model.
-            </p>
-
-            <h3 class="title is-4">Sampling Path Transformation</h3>
-            <p>
-              To define the target path, we employ a <strong>scaling reparameterization</strong> of the source path.
-              Specifically, we define the target state \(\bar{x}_s\) from the source state \(x_{t_s}\) as:
-            </p>
-
-            <div class="box has-text-centered" style="background-color: #f5f5f5;">
-              $$ \bar{x}_s = c_s x_{t_s}, \quad \text{where} \quad c_s = \frac{\bar{\sigma}(s)}{\sigma(t_s)} =
-              \frac{\bar{\alpha}(s)}{\alpha(t_s)} $$
-            </div>
-
-            <p>
-              This transformation preserves the endpoint marginals while changing the geometry of the sampling path. The
-              velocity along the target path is given by:
-            </p>
-
-            <div class="box has-text-centered" style="background-color: #f5f5f5;">
-              $$ \bar{u}_s(\bar{x}_s) = (\partial_s \log c_s) \bar{x}_s + c_s \frac{dt_s}{ds}
-              u_{t_s}\left(\frac{\bar{x}_s}{c_s}\right) $$
-            </div>
-
-            <h3 class="title is-4">Bézier Parameterization</h3>
-            <p>
-              To learn the optimal scheduler functions \(\bar{\alpha}(s)\) and \(\bar{\sigma}(s)\), we employ
-              <strong>1D Bézier curves</strong>. A Bézier parameterization naturally satisfies the critical
-              requirements for a valid scheduler:
-            </p>
-            <ul>
-              <li><strong>Boundary Conditions:</strong> Fixed control points at \(s=0\) and \(s=1\) ensure the schedule
-                starts at pure noise and ends at data.</li>
-              <li><strong>Monotonicity:</strong> Enforcing non-decreasing control points guarantees a strictly
-                increasing Signal-to-Noise Ratio (SNR), ensuring the mapping \(t_s\) is invertible.</li>
-              <li><strong>Differentiability:</strong> Bézier curves are smooth (\(C^\infty\)) polynomials, allowing for
-                stable calculation of time derivatives required for the velocity field.</li>
-            </ul>
-
-            <div class="has-text-centered" style="margin-top: 20px;">
-              <img src="./static/images/method_overview.png" alt="Method Overview"
-                style="width: 80%; margin-bottom: 20px;">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!--/ Method. -->
-
-  <!-- Bézier Stochastic Interpolant Scheduler. -->
-  <section class="section" style="background-color: #fcfcfc;">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3">Bézier Stochastic Interpolant Scheduler</h2>
-          <div class="content has-text-justified">
-            <p>
-              The interactive visualization below demonstrates how a 1D Bézier curve can flexibly represent different
-              scheduler shapes while maintaining fixed endpoints.
-              By adjusting the control points (red), BézierFlow optimizes the continuous trajectory of the noise
-              schedule \(\alpha(t)\) or \(\sigma(t)\) to minimize discretization error in few-step sampling.
-            </p>
-          </div>
-          <div class="box"
-            style="padding: 0; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-            <iframe src="./static/js/bezier_tool.html" style="width: 100%; height: 500px; border: none;"></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!--/ Bézier Stochastic Interpolant Scheduler. -->
+  <!--/ Abstract. -->
 
   <section class="section">
     <div class="container is-max-desktop">
-      <!-- Qualitative Results. -->
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3">Qualitative Results</h2>
+      <!-- ImageNet Results -->
+      <h2 class="title is-3 has-text-centered">ImageNet 256x256</h2>
 
-          <h3 class="title is-4">ImageNet 256x256 (NFE=6)</h3>
-          <div class="content has-text-centered">
-            <img src="./static/images/qual_imagenet.png" alt="ImageNet Results" style="width: 100%;">
-            <p>Comparison on ImageNet 256x256 generation.</p>
-          </div>
+      <h3 class="title is-4 has-text-centered">NFE=6</h3>
+      <div class="results-carousel carousel">
+        <div class="item has-text-centered">
+          <img src="./static/images/imagenet_midpoint_6.png" alt="ImageNet NFE=6 Sample 1">
+        </div>
+        <div class="item has-text-centered">
+          <img src="./static/images/imagenet_midpoint_6_2.png" alt="ImageNet NFE=6 Sample 2">
+        </div>
+      </div>
 
-          <h3 class="title is-4">Stable Diffusion v3.5 (NFE=6)</h3>
-          <div class="content has-text-centered">
-            <div class="columns is-centered is-gapless is-mobile">
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">Base (RK2)</p>
-                <figure class="image">
-                  <img src="./static/images/sd_base_02817.png" alt="SDv3.5 Base">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">DMN</p>
-                <figure class="image">
-                  <img src="./static/images/sd_dmn_02817.png" alt="SDv3.5 DMN">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">GITS</p>
-                <figure class="image">
-                  <img src="./static/images/sd_gits_02817.png" alt="SDv3.5 GITS">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">LD3</p>
-                <figure class="image">
-                  <img src="./static/images/sd_ld3_02817.png" alt="SDv3.5 LD3">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p>
-                <figure class="image">
-                  <img src="./static/images/sd_ours_02817.png" alt="SDv3.5 Ours">
-                </figure>
-              </div>
+      <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">NFE=8</h3>
+      <div class="results-carousel carousel">
+        <div class="item has-text-centered">
+          <img src="./static/images/imagenet_midpoint_8.png" alt="ImageNet NFE=8 Sample 1">
+        </div>
+        <div class="item has-text-centered">
+          <img src="./static/images/imagenet_midpoint_8_2.png" alt="ImageNet NFE=8 Sample 2">
+        </div>
+      </div>
+      <!--/ ImageNet Results -->
+
+      <!-- SDv3.5 Results -->
+      <h2 class="title is-3 has-text-centered" style="margin-top: 50px;">Stable Diffusion v3.5</h2>
+
+      <h3 class="title is-4 has-text-centered">NFE=6</h3>
+      <div class="results-carousel carousel">
+        <div class="item">
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK2)</p><img
+                src="./static/images/RK2_Base_NFE6_02817.png">
             </div>
-            <p class="is-italic">"A bus stopped in front of a tall red building."</p>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/RK2_DMN_NFE6_02817.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img
+                src="./static/images/RK2_GITS_NFE6_02817.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/RK2_LD3_NFE6_02817.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img
+                src="./static/images/RK2_Ours_NFE6_02817.png">
+            </div>
+          </div>
+          <p class="has-text-centered is-italic">"A bus stopped in front of a tall red building."</p>
+        </div>
+        <div class="item">
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK2)</p><img
+                src="./static/images/RK2_Base_NFE6_02915.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/RK2_DMN_NFE6_02915.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img
+                src="./static/images/RK2_GITS_NFE6_02915.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/RK2_LD3_NFE6_02915.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img
+                src="./static/images/RK2_Ours_NFE6_02915.png">
+            </div>
+          </div>
+          <p class="has-text-centered is-italic">"A group of people standing around a large airplane."</p>
+        </div>
+      </div>
+
+      <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">NFE=8</h3>
+      <div class="results-carousel carousel">
+        <div class="item">
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK2)</p><img
+                src="./static/images/RK2_Base_NFE8_04497.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/RK2_DMN_NFE8_04497.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img
+                src="./static/images/RK2_GITS_NFE8_04497.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/RK2_LD3_NFE8_04497.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img
+                src="./static/images/RK2_Ours_NFE8_04497.png">
+            </div>
+          </div>
+          <p class="has-text-centered is-italic">"A small white dog sitting on a bed."</p>
+        </div>
+        <div class="item">
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK2)</p><img
+                src="./static/images/RK2_Base_NFE8_04829.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/RK2_DMN_NFE8_04829.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img
+                src="./static/images/RK2_GITS_NFE8_04829.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/RK2_LD3_NFE8_04829.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img
+                src="./static/images/RK2_Ours_NFE8_04829.png">
+            </div>
+          </div>
+          <p class="has-text-centered is-italic">"A group of people standing on top of a snow covered slope."</p>
+        </div>
+      </div>
+      <!--/ SDv3.5 Results -->
+
+      <!-- Extension Results -->
+      <h2 class="title is-3 has-text-centered" style="margin-top: 50px;">Extension to Other Domains</h2>
+      <div class="results-carousel carousel">
+        <!-- Slide 1: Point Cloud -->
+        <div class="item">
+          <h3 class="title is-4 has-text-centered">3D Point Cloud (NFE=1)</h3>
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_1.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_1.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_1.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_1.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_1.png">
+            </div>
+          </div>
+        </div>
+        <!-- Slide 2: Layout -->
+        <div class="item">
+          <h3 class="title is-4 has-text-centered">Layout Generation (NFE=4)</h3>
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_159.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_159.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_159.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_159.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_159.png">
+            </div>
           </div>
         </div>
       </div>
-      <!--/ Qualitative Results. -->
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container is-max-desktop">
-      <!-- Extension to Other Domains. -->
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3">Extension to Other Domains</h2>
-          <div class="content has-text-justified">
-            <p>
-              BézierFlow is a generic framework applicable beyond image generation. We demonstrate its effectiveness on
-              <strong>3D Point Cloud Generation</strong> and <strong>Layout Generation</strong>.
-            </p>
-          </div>
-
-          <h3 class="title is-4">3D Point Cloud Generation (NFE=1)</h3>
-          <div class="content has-text-centered">
-            <div class="columns is-centered is-gapless is-mobile">
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p>
-                <figure class="image">
-                  <img src="./static/images/pc_base_1.png" alt="Point Cloud Base">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">DMN</p>
-                <figure class="image">
-                  <img src="./static/images/pc_dmn_1.png" alt="Point Cloud DMN">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">GITS</p>
-                <figure class="image">
-                  <img src="./static/images/pc_gits_1.png" alt="Point Cloud GITS">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">LD3</p>
-                <figure class="image">
-                  <img src="./static/images/pc_ld3_1.png" alt="Point Cloud LD3">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p>
-                <figure class="image">
-                  <img src="./static/images/pc_ours_1.png" alt="Point Cloud Ours">
-                </figure>
-              </div>
-            </div>
-            <p>Unconditional generation of airplane point clouds (ShapeNet).</p>
-          </div>
-
-          <h3 class="title is-4">Layout Generation (NFE=4)</h3>
-          <div class="content has-text-centered">
-            <div class="columns is-centered is-gapless is-mobile">
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p>
-                <figure class="image">
-                  <img src="./static/images/layout_base_159.png" alt="Layout Base">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">DMN</p>
-                <figure class="image">
-                  <img src="./static/images/layout_dmn_159.png" alt="Layout DMN">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">GITS</p>
-                <figure class="image">
-                  <img src="./static/images/layout_gits_159.png" alt="Layout GITS">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">LD3</p>
-                <figure class="image">
-                  <img src="./static/images/layout_ld3_159.png" alt="Layout LD3">
-                </figure>
-              </div>
-              <div class="column">
-                <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p>
-                <figure class="image">
-                  <img src="./static/images/layout_ours_159.png" alt="Layout Ours">
-                </figure>
-              </div>
-            </div>
-            <p>Unconditional layout generation (RICO dataset).</p>
-          </div>
-
-          <h3 class="title is-4">Quantitative Results on Other Domains</h3>
-          <div class="table-container">
-            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-              style="width: 80%; margin: 0 auto;">
-              <thead>
-                <tr>
-                  <th>Task</th>
-                  <th>Metric</th>
-                  <th>Method</th>
-                  <th>NFE=4</th>
-                  <th>NFE=6</th>
-                  <th>NFE=8</th>
-                  <th>NFE=10</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td rowspan="5" style="vertical-align: middle;">3D Point Cloud</td>
-                  <td rowspan="5" style="vertical-align: middle;">CD-MMD (↓)</td>
-                  <td>Base (iPNDM)</td>
-                  <td>1.17</td>
-                  <td>0.91</td>
-                  <td>0.78</td>
-                  <td>0.67</td>
-                </tr>
-                <tr>
-                  <td>+ DMN</td>
-                  <td>1.18</td>
-                  <td>0.63</td>
-                  <td>1.74</td>
-                  <td>0.65</td>
-                </tr>
-                <tr>
-                  <td>+ GITS</td>
-                  <td>3.22</td>
-                  <td>3.59</td>
-                  <td>3.99</td>
-                  <td>2.73</td>
-                </tr>
-                <tr>
-                  <td>+ LD3</td>
-                  <td>2.40</td>
-                  <td>0.89</td>
-                  <td>0.77</td>
-                  <td>0.70</td>
-                </tr>
-                <tr style="font-weight: bold; background-color: #f0f8ff;">
-                  <td>+ BézierFlow</td>
-                  <td>0.85</td>
-                  <td>0.58</td>
-                  <td>0.57</td>
-                  <td>0.56</td>
-                </tr>
-                <tr>
-                  <td colspan="7" style="background-color: #fff; border: none;"></td>
-                </tr>
-                <tr>
-                  <td rowspan="5" style="vertical-align: middle;">Layout</td>
-                  <td rowspan="5" style="vertical-align: middle;">FID (↓)</td>
-                  <td>Base (RK1)</td>
-                  <td>55.88</td>
-                  <td>22.75</td>
-                  <td>11.66</td>
-                  <td>7.93</td>
-                </tr>
-                <tr>
-                  <td>+ DMN</td>
-                  <td>178.35</td>
-                  <td>88.40</td>
-                  <td>26.27</td>
-                  <td>10.96</td>
-                </tr>
-                <tr>
-                  <td>+ GITS</td>
-                  <td>41.08</td>
-                  <td>12.84</td>
-                  <td>7.32</td>
-                  <td>5.90</td>
-                </tr>
-                <tr>
-                  <td>+ LD3</td>
-                  <td>19.51</td>
-                  <td>8.36</td>
-                  <td>5.03</td>
-                  <td>3.70</td>
-                </tr>
-                <tr style="font-weight: bold; background-color: #f0f8ff;">
-                  <td>+ BézierFlow</td>
-                  <td>32.78</td>
-                  <td>7.10</td>
-                  <td>3.86</td>
-                  <td>2.96</td>
-                </tr>
-              </tbody>
-            </table>
-            <p class="is-size-7 has-text-centered" style="margin-top: 10px;">
-              * Comparison of generation quality on ShapeNet (Point Cloud) and RICO (Layout).
-            </p>
-          </div>
-
-        </div>
-      </div>
-      <!--/ Extension to Other Domains. -->
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container is-max-desktop">
-      <!-- Quantitative Results. -->
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3">Quantitative Results (Image Generation)</h2>
-          <div class="content has-text-justified">
-            <p>
-              BézierFlow consistently outperforms existing lightweight training methods (DMN, GITS, LD3) across various
-              datasets and NFEs.
-              Below is a summary of FID scores on CIFAR-10.
-            </p>
-          </div>
-
-          <div class="table-container">
-            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-              <thead>
-                <tr>
-                  <th>Method</th>
-                  <th>NFE=4</th>
-                  <th>NFE=6</th>
-                  <th>NFE=8</th>
-                  <th>NFE=10</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>UniPC (Baseline)</td>
-                  <td>50.30</td>
-                  <td>19.33</td>
-                  <td>14.96</td>
-                  <td>23.59</td>
-                </tr>
-                <tr>
-                  <td>+ DMN</td>
-                  <td>26.42</td>
-                  <td>8.11</td>
-                  <td>9.44</td>
-                  <td>30.39</td>
-                </tr>
-                <tr>
-                  <td>+ GITS</td>
-                  <td>24.83</td>
-                  <td>11.02</td>
-                  <td>12.12</td>
-                  <td>13.20</td>
-                </tr>
-                <tr>
-                  <td>+ LD3</td>
-                  <td>12.04</td>
-                  <td>3.56</td>
-                  <td>6.16</td>
-                  <td>18.17</td>
-                </tr>
-                <tr style="font-weight: bold; background-color: #f0f8ff;">
-                  <td>+ BézierFlow (Ours)</td>
-                  <td>9.55</td>
-                  <td>3.13</td>
-                  <td>7.43</td>
-                  <td>12.27</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p class="is-size-7 has-text-left">
-            * FID scores (lower is better) on CIFAR-10 32x32 using EDM with UniPC solver.
-          </p>
-
-        </div>
-      </div>
-      <!--/ Quantitative Results. -->
+      <!--/ Extension Results -->
     </div>
   </section>
 

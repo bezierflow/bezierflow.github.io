@@ -657,28 +657,32 @@
             <p>
               We propose <strong>BézierFlow</strong>, which parameterizes the target scheduler \((\bar\alpha^\theta_s,
               \bar\sigma^\theta_s)\) using <strong>Bézier curves</strong>. We relate the target and source schedulers
-              via a scaling transformation \(\bar{x}_s = c_s x_{t_s}\), where:
+              via a scaling reparameterization \(\bar{x}_s = c_s x_{t_s}\), where:
             </p>
             <div class="has-text-centered" style="margin: 20px 0;">
-              $$ c_s = \frac{\bar\alpha^\theta_s}{\alpha_{t_s}} = \frac{\bar\sigma^\theta_s}{\sigma_{t_s}}, \quad t_s =
-              \rho^{-1}\left(\frac{\bar\alpha^\theta_s}{\bar\sigma^\theta_s}\right) $$
+              $$ \begin{aligned}
+              c_s &= \begin{cases}
+              \frac{\bar\sigma^\theta_s}{\sigma_{t_s}} = \frac{\bar\alpha^\theta_s}{\alpha_{t_s}}, &0 < s< 1, \\
+                1,&\text{otherwise}, \\ \end{cases} \\ t_s &=\rho^{-1}\big(\bar{\rho}^\theta_s\big), \qquad
+                \rho(t)=\frac{\alpha_t}{\sigma_t},\,\, \bar\rho^\theta_s=\frac{\bar\alpha^\theta_s}{\bar\sigma^\theta_s}
+                \end{aligned} $$ </div>
+                <p>
+                  This ensures smoothness (\(C^2\) continuity) and allows for analytic computation of the transformed
+                  velocity field:
+                </p>
+                <div class="has-text-centered" style="margin: 20px 0;">
+                  $$ \bar{u}_s(\bar{x}_s) = \Big(\partial_s\log c_s\Big)\,\bar x_s +
+                  c_s\,\frac{dt_s}{ds}\;u_{t_s}\!\Big(\frac{\bar x_s}{c_s}\Big) $$
+                </div>
+                <p>
+                  This parameterization enables stable optimization of the sampling trajectory while preserving the
+                  endpoint
+                  marginals.
+                </p>
             </div>
-            <p>
-              This ensures smoothness (\(C^2\) continuity) and allows for analytic computation of the transformed
-              velocity field:
-            </p>
-            <div class="has-text-centered" style="margin: 20px 0;">
-              $$ \bar{u}_s(\bar{x}_s) = \Big(\partial_s\log c_s\Big)\,\bar x_s +
-              c_s\,\frac{dt_s}{ds}\;u_{t_s}\!\Big(\frac{\bar x_s}{c_s}\Big) $$
-            </div>
-            <p>
-              This parameterization enables stable optimization of the sampling trajectory while preserving the endpoint
-              marginals.
-            </p>
           </div>
         </div>
       </div>
-    </div>
   </section>
   <!--/ Method Overview -->
 

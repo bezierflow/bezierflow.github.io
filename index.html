@@ -218,9 +218,11 @@
     <div class="container is-max-desktop">
       <!-- ImageNet Results -->
       <h2 class="title is-3 has-text-centered">Qualitative Comparisons</h2>
-      <p class="has-text-centered" style="color: red; margin-bottom: 20px;">
-        BézierFlow consistently produces sharper details and fewer artifacts at low NFEs compared to baselines across
-        various benchmarks.
+      <p class="has-text-centered" style="margin-bottom: 20px;">
+        For pretrained diffusion and flow models, BézierFlow consistently produces <span style="color: red;">sharper
+          details and fewer artifacts
+          at low NFEs compared to baselines across
+          various solvers and datasets.</span>
       </p>
       <h3 class="title is-4 has-text-centered">ImageNet 256x256</h3>
 
@@ -459,9 +461,9 @@
       </div>
 
       <!-- Point Cloud -->
-      <p class="has-text-centered" style="color: red; margin-top: 50px; margin-bottom: 20px;">
-        BézierFlow demonstrates strong generalization to other domains, generating high-quality 3D point clouds and
-        layouts that closely match the teacher distribution.
+      <p class="has-text-centered" style="margin-top: 50px; margin-bottom: 20px;">
+        BézierFlow is a generic framework applicable not only to image generation but also to various generative tasks,
+        such as 3D point cloud generation and layout generation.
       </p>
       <h3 class="title is-4 has-text-centered">3D Point Cloud Generation</h3>
 

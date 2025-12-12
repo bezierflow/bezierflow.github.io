@@ -630,6 +630,51 @@
   </section>
 
 
+  <!-- Method Overview -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Method Overview</h2>
+          <div class="content has-text-justified">
+
+            <h3 class="title is-4">Problem Definition</h3>
+            <p>
+              Our goal is to optimize a <strong>target path</strong> (student) that achieves high-quality generation
+              with few NFEs by mimicking a <strong>source path</strong> (teacher) that uses many steps. We formulate
+              this as a teacher-forcing objective:
+            </p>
+            <div class="has-text-centered" style="margin: 20px 0;">
+              $$ \min_\theta \mathcal{L}(\theta) = \mathbb{E}_{x_0 \sim p_0}\big[ d\big(\xi(x_0, \{t_i\}_{i=1}^N;
+              S_\phi), \bar{\xi}_\theta(x_0, \{s_i\}_{i=1}^M; S_\phi)\big)\big] $$
+            </div>
+            <p>
+              where \(\xi\) and \(\bar{\xi}_\theta\) are the teacher (\(N\) steps) and student (\(M\) steps) solvers,
+              respectively, and \(M \ll N\).
+            </p>
+
+            <h3 class="title is-4" style="margin-top: 30px;">Bézier Parameterization</h3>
+            <p>
+              We propose <strong>BézierFlow</strong>, which parameterizes the target scheduler \((\bar\alpha^\theta_s,
+              \bar\sigma^\theta_s)\) using <strong>Bézier curves</strong>. This ensures smoothness (\(C^2\) continuity)
+              and allows for analytic computation of the transformed velocity field:
+            </p>
+            <div class="has-text-centered" style="margin: 20px 0;">
+              $$ \bar{u}_s(\bar{x}_s) = \Big(\partial_s\log c_s\Big)\,\bar x_s +
+              c_s\,\frac{dt_s}{ds}\;u_{t_s}\!\Big(\frac{\bar x_s}{c_s}\Big) $$
+            </div>
+            <p>
+              This parameterization enables stable optimization of the sampling trajectory while preserving the endpoint
+              marginals.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--/ Method Overview -->
+
+
   <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
       <h2 class="title">BibTeX</h2>

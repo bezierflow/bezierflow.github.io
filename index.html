@@ -492,28 +492,10 @@
       <h2 class="title is-3 has-text-centered" style="margin-top: 50px;">Extension to Other Domains</h2>
 
       <!-- Point Cloud -->
-      <h3 class="title is-4 has-text-centered">3D Point Cloud Generation (NFE=1)</h3>
+      <h3 class="title is-4 has-text-centered">3D Point Cloud Generation (NFE=6, 8)</h3>
       <div class="results-carousel carousel">
         <div class="item">
-          <div class="columns is-centered is-gapless is-mobile has-text-centered">
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_1.png">
-            </div>
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_1.png">
-            </div>
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_1.png">
-            </div>
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_1.png">
-            </div>
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_1.png">
-            </div>
-          </div>
-        </div>
-        <div class="item">
+          <!-- NFE=6 -->
           <div class="columns is-centered is-gapless is-mobile has-text-centered">
             <div class="column">
               <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_3.png">
@@ -531,8 +513,6 @@
               <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_3.png">
             </div>
           </div>
-        </div>
-        <div class="item">
           <div class="columns is-centered is-gapless is-mobile has-text-centered">
             <div class="column">
               <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_17.png">
@@ -552,9 +532,38 @@
           </div>
         </div>
         <div class="item">
+          <!-- NFE=8 -->
           <div class="columns is-centered is-gapless is-mobile has-text-centered">
             <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_87.png">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (iPNDM)</p><img src="./static/images/iPNDM_1.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_1.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_1.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_1.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_1.png">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layout -->
+      <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">Layout Generation (NFE=6, 8)</h3>
+      <div class="results-carousel carousel">
+        <div class="item">
+          <!-- NFE=6 -->
+          <div class="columns is-centered is-gapless is-mobile has-text-centered">
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_87.png">
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-7-mobile">Bespoke</p><img src="./static/images/Bespoke_87.png">
             </div>
             <div class="column">
               <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_87.png">
@@ -565,42 +574,13 @@
             <div class="column">
               <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_87.png">
             </div>
-            <div class="column">
+            <div class="column" style="border-right: 2px solid #ccc;">
               <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_87.png">
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Layout -->
-      <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">Layout Generation (NFE=6)</h3>
-      <div class="results-carousel carousel">
-        <div class="item">
-          <div class="columns is-centered is-gapless is-mobile has-text-centered">
             <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_159.png">
-            </div>
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">Bespoke</p><img src="./static/images/Bespoke_159.png">
-            </div>
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_159.png">
-            </div>
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_159.png">
-            </div>
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_159.png">
-            </div>
-            <div class="column" style="border-right: 2px solid #ccc;">
-              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_159.png">
-            </div>
-            <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">Teacher</p><img src="./static/images/Teacher_159.png">
+              <p class="has-text-weight-bold is-size-7-mobile">Teacher</p><img src="./static/images/Teacher_87.png">
             </div>
           </div>
-        </div>
-        <div class="item">
           <div class="columns is-centered is-gapless is-mobile has-text-centered">
             <div class="column">
               <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_182.png">
@@ -626,6 +606,7 @@
           </div>
         </div>
         <div class="item">
+          <!-- NFE=8 -->
           <div class="columns is-centered is-gapless is-mobile has-text-centered">
             <div class="column">
               <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_72.png">
@@ -649,34 +630,33 @@
               <p class="has-text-weight-bold is-size-7-mobile">Teacher</p><img src="./static/images/Teacher_72.png">
             </div>
           </div>
-        </div>
-        <div class="item">
           <div class="columns is-centered is-gapless is-mobile has-text-centered">
             <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_87.png">
+              <p class="has-text-weight-bold is-size-7-mobile">Base (RK1)</p><img src="./static/images/RK1_159.png">
             </div>
             <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">Bespoke</p><img src="./static/images/Bespoke_87.png">
+              <p class="has-text-weight-bold is-size-7-mobile">Bespoke</p><img src="./static/images/Bespoke_159.png">
             </div>
             <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_87.png">
+              <p class="has-text-weight-bold is-size-7-mobile">DMN</p><img src="./static/images/DMN_159.png">
             </div>
             <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_87.png">
+              <p class="has-text-weight-bold is-size-7-mobile">GITS</p><img src="./static/images/GITS_159.png">
             </div>
             <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_87.png">
+              <p class="has-text-weight-bold is-size-7-mobile">LD3</p><img src="./static/images/LD3_159.png">
             </div>
             <div class="column" style="border-right: 2px solid #ccc;">
-              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_87.png">
+              <p class="has-text-weight-bold is-size-7-mobile">BézierFlow</p><img src="./static/images/Ours_159.png">
             </div>
             <div class="column">
-              <p class="has-text-weight-bold is-size-7-mobile">Teacher</p><img src="./static/images/Teacher_87.png">
+              <p class="has-text-weight-bold is-size-7-mobile">Teacher</p><img src="./static/images/Teacher_159.png">
             </div>
           </div>
         </div>
       </div>
-      <!--/ Extension Results -->
+    </div>
+    <!--/ Extension Results -->
     </div>
   </section>
 

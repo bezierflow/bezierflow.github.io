@@ -638,7 +638,7 @@
           <h2 class="title is-3">Method Overview</h2>
           <div class="content has-text-justified">
 
-            <h3 class="title is-4">Problem Definition</h3>
+            <h3 class="title is-4 has-text-centered">Problem Definition</h3>
             <p>
               Our goal is to optimize a <strong>target path</strong> (student) that achieves high-quality generation
               with few NFEs by mimicking a <strong>source path</strong> (teacher) that uses many steps. We formulate
@@ -653,11 +653,19 @@
               respectively, and \(M \ll N\).
             </p>
 
-            <h3 class="title is-4" style="margin-top: 30px;">Bézier Parameterization</h3>
+            <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">Bézier Parameterization</h3>
             <p>
               We propose <strong>BézierFlow</strong>, which parameterizes the target scheduler \((\bar\alpha^\theta_s,
-              \bar\sigma^\theta_s)\) using <strong>Bézier curves</strong>. This ensures smoothness (\(C^2\) continuity)
-              and allows for analytic computation of the transformed velocity field:
+              \bar\sigma^\theta_s)\) using <strong>Bézier curves</strong>. We relate the target and source schedulers
+              via a scaling transformation \(\bar{x}_s = c_s x_{t_s}\), where:
+            </p>
+            <div class="has-text-centered" style="margin: 20px 0;">
+              $$ c_s = \frac{\bar\alpha^\theta_s}{\alpha_{t_s}} = \frac{\bar\sigma^\theta_s}{\sigma_{t_s}}, \quad t_s =
+              \rho^{-1}\left(\frac{\bar\alpha^\theta_s}{\bar\sigma^\theta_s}\right) $$
+            </div>
+            <p>
+              This ensures smoothness (\(C^2\) continuity) and allows for analytic computation of the transformed
+              velocity field:
             </p>
             <div class="has-text-centered" style="margin: 20px 0;">
               $$ \bar{u}_s(\bar{x}_s) = \Big(\partial_s\log c_s\Big)\,\bar x_s +

@@ -87,14 +87,14 @@
               Few-Step Generation</h1>
             <div class="is-size-5 publication-authors">
               <span class="author-block">
-                <a href="mailto:dbsghd363@kaist.ac.kr">Yunhong Min</a>,</span>
+                <a href="https://myh4832.github.io">Yunhong Min</a>,</span>
               <span class="author-block">
-                <a href="mailto:63days@kaist.ac.kr">Juil Koo</a>,</span>
+                <a href="https://63days.github.io">Juil Koo</a>,</span>
               <span class="author-block">
-                <a href="mailto:dreamy1534@kaist.ac.kr">Seungwoo Yoo</a>,
+                <a href="https://dreamy1534.github.io">Seungwoo Yoo</a>,
               </span>
               <span class="author-block">
-                <a href="mailto:mhsung@kaist.ac.kr">Minhyuk Sung</a>
+                <a href="https://mhsung.github.io">Minhyuk Sung</a>
               </span>
             </div>
 
@@ -157,12 +157,11 @@
           <h2 class="title is-3">TL;DR</h2>
           <div class="content has-text-justified">
             <p>
-              <strong>BézierFlow</strong> optimizes the sampling trajectory of diffusion/flow models using
-              <strong>Bézier curves</strong>.
-              It enables high-quality generation in just a few steps (e.g., 4-10 NFEs) by learning a Bézier stochastic
-              interpolant scheduler parameterized by Bézier control points that is smooth, monotonic, and
-              boundary-preserving.
-              Training takes only ~15 minutes!
+              BézierFlow optimizes the sampling trajectory to achieve a 2–3× performance improvement for few-step
+              generation with ≤ 10 NFEs.
+              As illustrated in the teaser, our method aligns the sampling path with the teacher distribution using only
+              3 function evaluations.
+              <span style="color: red;">Training takes ~15 minutes.</span>
             </p>
           </div>
         </div>
@@ -302,7 +301,7 @@
       <h3 class="title is-4 has-text-centered" style="margin-top: 50px;">Stable Diffusion v3.5</h3>
 
       <!-- RK1 Subsection -->
-      <h4 class="title is-5 has-text-centered">Base Solver: RK1</h4>
+      <h4 class="title is-5 has-text-centered">Base Solver: RK1 (Euler)</h4>
 
       <!-- Static Header (RK1) -->
       <div class="columns is-centered is-gapless is-mobile has-text-centered header-row">
@@ -388,7 +387,7 @@
       </div>
 
       <!-- RK2 Subsection -->
-      <h4 class="title is-5 has-text-centered" style="margin-top: 30px;">Base Solver: RK2</h4>
+      <h4 class="title is-5 has-text-centered" style="margin-top: 30px;">Base Solver: RK2 (Midpoint)</h4>
 
       <!-- Static Header (RK2) -->
       <div class="columns is-centered is-gapless is-mobile has-text-centered header-row">
@@ -474,8 +473,39 @@
         </div>
       </div>
 
+      <!-- Quantitative Comparisons -->
+      <section class="section">
+        <div class="container is-max-desktop">
+          <h2 class="title is-3 has-text-centered">Quantitative Comparisons</h2>
+          <p class="has-text-left" style="margin-bottom: 20px;">
+            BézierFlow consistently achieves <span style="color: red;">significantly lower FID scores compared to
+              base
+              solvers across
+              various diffusion and flow models</span>, demonstrating the effectiveness of Bézier-based trajectory
+            transformations at low NFEs.
+          </p>
+          <div class="content has-text-justified">
+
+            <h3 class="title is-4 has-text-centered">FID Comparison with Diffusion Models</h3>
+            <div class="has-text-centered">
+              <img src="./static/images/bézierflow_diffusion.png" alt="FID Comparison with Diffusion Models"
+                style="width: 100%;">
+            </div>
+
+            <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">FID Comparison with Flow Models</h3>
+            <div class="has-text-centered">
+              <img src="./static/images/bézierflow_flow.png" alt="FID Comparison with Flow Models"
+                style="width: 100%;">
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+      <!--/ Quantitative Comparisons -->
+
       <!-- Extension Results -->
-      <h2 class="title is-3 has-text-centered" style="margin-top: 50px;">Extension to Other Domains</h2>
+      <h2 class="title is-3 has-text-centered" style="margin-top: 50px;">More Results on Different Domains</h2>
 
       <!-- Point Cloud -->
       <p class="has-text-left" style="margin-top: 20px; margin-bottom: 20px;">
@@ -634,93 +664,59 @@
   <!-- Method Overview -->
   <section class="section">
     <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Method Overview</h2>
-          <div class="content has-text-justified">
+      <h2 class="title is-3 has-text-centered">Method Overview</h2>
+      <div class="content has-text-justified">
 
-            <h3 class="title is-4 has-text-centered">Problem Definition</h3>
+        <h3 class="title is-4 has-text-centered">Problem Definition</h3>
+        <p>
+          Our goal is to optimize a <strong>target path</strong> (student) that achieves high-quality generation
+          with few NFEs by mimicking a <strong>source path</strong> (teacher) that uses many steps. We formulate
+          this as a teacher-forcing objective:
+        </p>
+        <div class="has-text-centered" style="margin: 20px 0;">
+          $$ \min_\theta \mathcal{L}(\theta) = \mathbb{E}_{x_0 \sim p_0}\big[ d\big(\xi(x_0, \{t_i\}_{i=1}^N;
+          S_\phi), \bar{\xi}_\theta(x_0, \{s_i\}_{i=1}^M; S_\phi)\big)\big] $$
+        </div>
+        <p>
+          where \(\xi\) and \(\bar{\xi}_\theta\) are the teacher (\(N\) steps) and student (\(M\) steps) solvers,
+          respectively, and \(M \ll N\).
+        </p>
+
+        <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">Bézier Stochastic Interpolant Scheduler
+        </h3>
+        <p>
+          We propose <strong>BézierFlow</strong>, which parameterizes the target scheduler \((\bar\alpha^\theta_s,
+          \bar\sigma^\theta_s)\) using <strong>Bézier curves</strong>. We relate the target and source schedulers
+          via a scaling reparameterization \(\bar{x}_s = c_s x_{t_s}\), where:
+        </p>
+        <div class="has-text-centered" style="margin: 20px 0;">
+          $$ \begin{aligned}
+          c_s &= \begin{cases}
+          \frac{\bar\sigma^\theta_s}{\sigma_{t_s}} = \frac{\bar\alpha^\theta_s}{\alpha_{t_s}}, &0 < s< 1, \\
+            1,&\text{otherwise}, \\ \end{cases} \\ t_s &=\rho^{-1}\big(\bar{\rho}^\theta_s\big), \qquad
+            \rho(t)=\frac{\alpha_t}{\sigma_t},\,\, \bar\rho^\theta_s=\frac{\bar\alpha^\theta_s}{\bar\sigma^\theta_s}
+            \end{aligned} $$ </div>
             <p>
-              Our goal is to optimize a <strong>target path</strong> (student) that achieves high-quality generation
-              with few NFEs by mimicking a <strong>source path</strong> (teacher) that uses many steps. We formulate
-              this as a teacher-forcing objective:
+              This ensures smoothness (\(C^2\) continuity) and allows for analytic computation of the transformed
+              velocity field:
             </p>
             <div class="has-text-centered" style="margin: 20px 0;">
-              $$ \min_\theta \mathcal{L}(\theta) = \mathbb{E}_{x_0 \sim p_0}\big[ d\big(\xi(x_0, \{t_i\}_{i=1}^N;
-              S_\phi), \bar{\xi}_\theta(x_0, \{s_i\}_{i=1}^M; S_\phi)\big)\big] $$
+              $$ \bar{u}_s(\bar{x}_s) = \Big(\partial_s\log c_s\Big)\,\bar x_s +
+              c_s\,\frac{dt_s}{ds}\;u_{t_s}\!\Big(\frac{\bar x_s}{c_s}\Big) $$
             </div>
             <p>
-              where \(\xi\) and \(\bar{\xi}_\theta\) are the teacher (\(N\) steps) and student (\(M\) steps) solvers,
-              respectively, and \(M \ll N\).
+              This Bézier-based parameterization enables stable optimization of the sampling trajectory while
+              preserving the
+              endpoint
+              marginals, effectively minimizing dicretization error of few-step generation.
             </p>
-
-            <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">Bézier Stochastic Interpolant Scheduler
-            </h3>
-            <p>
-              We propose <strong>BézierFlow</strong>, which parameterizes the target scheduler \((\bar\alpha^\theta_s,
-              \bar\sigma^\theta_s)\) using <strong>Bézier curves</strong>. We relate the target and source schedulers
-              via a scaling reparameterization \(\bar{x}_s = c_s x_{t_s}\), where:
-            </p>
-            <div class="has-text-centered" style="margin: 20px 0;">
-              $$ \begin{aligned}
-              c_s &= \begin{cases}
-              \frac{\bar\sigma^\theta_s}{\sigma_{t_s}} = \frac{\bar\alpha^\theta_s}{\alpha_{t_s}}, &0 < s< 1, \\
-                1,&\text{otherwise}, \\ \end{cases} \\ t_s &=\rho^{-1}\big(\bar{\rho}^\theta_s\big), \qquad
-                \rho(t)=\frac{\alpha_t}{\sigma_t},\,\, \bar\rho^\theta_s=\frac{\bar\alpha^\theta_s}{\bar\sigma^\theta_s}
-                \end{aligned} $$ </div>
-                <p>
-                  This ensures smoothness (\(C^2\) continuity) and allows for analytic computation of the transformed
-                  velocity field:
-                </p>
-                <div class="has-text-centered" style="margin: 20px 0;">
-                  $$ \bar{u}_s(\bar{x}_s) = \Big(\partial_s\log c_s\Big)\,\bar x_s +
-                  c_s\,\frac{dt_s}{ds}\;u_{t_s}\!\Big(\frac{\bar x_s}{c_s}\Big) $$
-                </div>
-                <p>
-                  This Bézier-based parameterization enables stable optimization of the sampling trajectory while
-                  preserving the
-                  endpoint
-                  marginals, effectively minimizing dicretization error of few-step generation.
-                </p>
-            </div>
-          </div>
         </div>
       </div>
+
   </section>
   <!--/ Method Overview -->
 
-  <!-- Quantitative Comparisons -->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Quantitative Comparisons</h2>
-          <p class="has-text-left" style="margin-bottom: 20px;">
-            BézierFlow consistently achieves <span style="color: red;">significantly lower FID scores compared to base
-              solvers across
-              various diffusion and flow models</span>, demonstrating the effectiveness of Bézier-based trajectory
-            transformations at low NFEs.
-          </p>
-          <div class="content has-text-justified">
 
-            <h3 class="title is-4 has-text-centered">FID Comparison with Diffusion Models</h3>
-            <div class="has-text-centered">
-              <img src="./static/images/bézierflow_diffusion.png" alt="FID Comparison with Diffusion Models"
-                style="width: 100%;">
-            </div>
-
-            <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">FID Comparison with Flow Models</h3>
-            <div class="has-text-centered">
-              <img src="./static/images/bézierflow_flow.png" alt="FID Comparison with Flow Models"
-                style="width: 100%;">
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!--/ Quantitative Comparisons -->
 
 
   <section class="section" id="BibTeX">
